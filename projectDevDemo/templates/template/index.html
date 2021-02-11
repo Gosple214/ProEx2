@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>A Demo</title>
+</head>
+<body>
+<div id="app">
+    <div>
+        <form>
+            <label for="id">ID:
+                <input v-model="id" type="text" name="id" id="id">
+            </label>
+            <br>
+            <label for="name">Name:
+                <input v-model="name" type="text" name="name" id="name">
+            </label>
+            <br>
+            <label for="job">Job:
+                <input v-model="job" type="text" name="job" id="job">
+            </label>
+            <button @click.prevent="addUser">添加用户</button>
+            <button @click.prevent="updateUser">修改用户</button>
+            <button @click.prevent="deleteUserById">删除用户</button>
+            <button @click.prevent="findUserById">根据Id查询用户</button>
+            <button @click.prevent="findUserByName">根据姓名查询用户</button>
+        </form>
+    </div>
+</div>
+</body>
+<script src="../js/vue.js"></script>
+<script src="../js/axios.js"></script>
+<script>
+    let vue = new Vue(
+        {
+            el:"#app",
+            data:{
+                url:"http://localhost",
+                id :"",
+                name :"",
+                job :"",
+            },
+            methods:{
+                addUser(){
+                    let data = {}
+                    data["name"] = this.name;
+                    data["job"] = this.job;
+                    axios.post(this.url+"/user/addUser",data).then(res=>{
+                        console.log(res.data.data);
+                    })
+                },
+                updateUser(){
+                    let data = {}
+                    data["id"] = id;
+                    data["name"] = this.name;
+                    data["job"] = this.job;
+                    axios.post(this.url+"/user/addUser",data).then(res=>{
+                        console.log(res.data.message);
+                    })
+                },
+                deleteUserById(){
+                    axios.post(this.url+"/user/deleteUserById/"+this.id).then(res=>{
+                        console.log(res.data.message)
+                    })
+                },
+                findUserById(){
+                    axios.get(this.url+"/user/findUserById/"+this.id).then(res=>{
+                        this.id = res.data.data.id;
+                        this.name = res.data.data.name;
+                        this.job = res.data.data.job;
+                    })
+                },
+                findUserByName(){
+                    let data = {}
+                    data["name"] = this.name;
+                    axios.get(this.url+"/user/findUserByName",data).then(res=>{
+                        this.id = res.data.data.id;
+                        this.name = res.data.data.name;
+                        this.job = res.data.data.job;
+                    })
+                }
+            }
+        }
+    );
+</script>
+</html>
